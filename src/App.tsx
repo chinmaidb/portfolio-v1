@@ -499,7 +499,7 @@ const App = () => {
                       Chinmai D Bharadwaj
                     </p>
                     <p className="mt-1 text-sm text-(--theme-text-soft)">
-                      Senior Full-Stack Developer
+                      Senior Full-Stack Engineer
                     </p>
                   </div>
                 </div>
@@ -524,7 +524,7 @@ const App = () => {
               <motion.div variants={fadeUp}>
                 <Hero
                   name="Chinmai D Bharadwaj"
-                  title="Senior Full-Stack Developer & Entrepreneur"
+                  title="Senior Full-Stack Engineer & Entrepreneur"
                   summary="Cloud-native systems, microservices, AI workflows"
                 />
               </motion.div>

@@ -603,7 +603,7 @@ const App = () => {
                   className="theme-surface inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-(--theme-text-soft) transition-all hover:border-[rgba(244,184,96,0.32)] hover:text-amber-300"
                 >
                   <GitFork className="w-4 h-4" />
-                  @shreshtadev
+                  @chinmaidb
                 </motion.a>
               </motion.div>
             </motion.div>
@@ -1106,7 +1106,7 @@ const App = () => {
               href="https://github.com/chinmaidb"
               className="hover:text-amber-400 transition-colors"
             >
-              ShreshtaDEV
+              ChinmaiDB
             </motion.a>
           </div>
         </div>

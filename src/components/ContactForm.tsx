@@ -77,10 +77,10 @@ const ContactForm = () => {
   };
 
   const inputCls =
-    "theme-surface-soft w-full rounded-xl px-4 py-3 text-sm text-[var(--theme-text-soft)] placeholder:text-[var(--theme-text-muted)] focus:outline-none focus:border-[rgba(244,184,96,0.35)] focus:ring-1 focus:ring-[rgba(244,184,96,0.18)] transition-all";
+    "riso-input w-full px-4 py-3 text-sm text-[var(--theme-text-soft)] placeholder:text-[var(--theme-text-muted)] focus:outline-none transition-all";
 
   return (
-    <section id="contact" className="max-w-4xl mx-auto px-0 pb-16">
+    <section id="contact" className="riso-contact max-w-4xl mx-auto px-0 pb-16">
       {/* Section header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ const ContactForm = () => {
             <Send className="w-5 h-5 text-amber-300" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">Get In Touch</h2>
+            <h2 className="riso-headline text-2xl font-bold text-white">Get In Touch</h2>
             <p className="text-sm mt-0.5 text-(--theme-text-muted)">
               Send me a message — I'll get back to you shortly.
             </p>
@@ -113,7 +113,7 @@ const ContactForm = () => {
         <div className="space-y-4">
           <div className="theme-surface-strong rounded-2xl p-5 space-y-5">
             <div>
-              <p className="text-xs uppercase tracking-[0.26em] text-amber-300 font-semibold mb-1">
+              <p className="riso-overline text-xs uppercase tracking-[0.18em] font-semibold mb-1">
                 Response time
               </p>
               <p className="text-sm text-(--theme-text-soft)">
@@ -121,7 +121,7 @@ const ContactForm = () => {
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.26em] text-amber-300 font-semibold mb-1">
+              <p className="riso-overline text-xs uppercase tracking-[0.18em] font-semibold mb-1">
                 Open to
               </p>
               <ul className="space-y-1.5 text-sm text-(--theme-text-muted)">
@@ -164,7 +164,7 @@ const ContactForm = () => {
               <div className="space-y-1.5">
                 <label
                   htmlFor="contact-name"
-                  className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+                  className="riso-overline text-xs uppercase tracking-[0.16em] font-medium"
                 >
                   Name
                 </label>
@@ -182,7 +182,7 @@ const ContactForm = () => {
               <div className="space-y-1.5">
                 <label
                   htmlFor="contact-email"
-                  className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+                  className="riso-overline text-xs uppercase tracking-[0.16em] font-medium"
                 >
                   Email
                 </label>
@@ -225,7 +225,7 @@ const ContactForm = () => {
             <div className="space-y-1.5">
               <label
                 htmlFor="contact-message"
-                className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+                className="riso-overline text-xs uppercase tracking-[0.16em] font-medium"
               >
                 Message
               </label>
@@ -258,7 +258,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={status === "sending" || !isConfigured}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50 shadow-[0_18px_40px_rgba(244,184,96,0.22)] hover:shadow-[0_20px_45px_rgba(244,184,96,0.28)] active:scale-[0.98] cursor-pointer"
+              className="riso-submit w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98] cursor-pointer"
             >
               {status === "sending" ? (
                 <>

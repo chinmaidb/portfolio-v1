@@ -245,10 +245,10 @@ const App = () => {
     if (!root) return;
 
     const palette = [
-      { bg: "#07111f", accent: "#123a67" },
-      { bg: "#07131d", accent: "#9a5b14" },
-      { bg: "#081524", accent: "#0f5b78" },
-      { bg: "#090f1a", accent: "#334155" },
+      { bg: "#f3ead7", accent: "#d9e7df" },
+      { bg: "#f2e5d7", accent: "#ead1c7" },
+      { bg: "#eef0df", accent: "#d9e4ed" },
+      { bg: "#f1e7d2", accent: "#e8dba9" },
     ];
 
     const lenis = new Lenis({
@@ -325,11 +325,16 @@ const App = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+      });
+    } catch {
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const scene = new THREE.Scene();
@@ -417,7 +422,7 @@ const App = () => {
           "--theme-bg-accent": "#123a67",
         } as React.CSSProperties
       }
-      className="theme-shell min-h-screen text-(--theme-text-soft) font-sans selection:bg-(--theme-selection) relative overflow-hidden"
+      className="theme-shell riso-print min-h-screen text-(--theme-text-soft) font-sans selection:bg-(--theme-selection) relative overflow-hidden"
     >
       <canvas
         ref={canvasRef}
@@ -435,7 +440,7 @@ const App = () => {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-20 left-[-10%] w-125 h-125 bg-sky-500/10 blur-[140px] rounded-full"
+          className="riso-ink-field riso-ink-field-blue top-20 left-[-10%] h-72 w-125 -rotate-6"
         />
 
         <motion.div
@@ -448,12 +453,12 @@ const App = () => {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute bottom-0 right-[-10%] w-100 h-100 bg-amber-500/10 blur-[150px] rounded-full"
+          className="riso-ink-field riso-ink-field-coral bottom-0 right-[-10%] h-64 w-100 rotate-3"
         />
       </div>
 
       {/* Header / Hero Section */}
-      <header className="chapter-section relative overflow-hidden border-b border-white/10 bg-white/3 pt-14 pb-10 min-h-[88vh] flex items-center">
+      <header className="chapter-section relative z-10 overflow-hidden border-b border-white/15 bg-white/3 pt-14 pb-10 min-h-[88vh] flex items-center">
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -592,7 +597,7 @@ const App = () => {
                     stiffness: 260,
                     damping: 20,
                   }}
-                  href="https://github.com/shreshtadev"
+                  href="https://github.com/chinmaidb"
                   target="_blank"
                   rel="noreferrer"
                   className="theme-surface inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-(--theme-text-soft) transition-all hover:border-[rgba(244,184,96,0.32)] hover:text-amber-300"
@@ -678,7 +683,7 @@ const App = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 chapter-section">
+      <main className="relative z-10 max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 chapter-section">
         {/* Left Column */}
         <motion.div
           variants={staggerContainer}
@@ -1074,7 +1079,7 @@ const App = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-black/30 py-8 mt-12">
+      <footer className="relative z-10 border-t border-white/15 bg-black/10 py-8 mt-12">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-(--theme-text-muted)">
           <p>
             © {new Date().getFullYear()} Chinmai D Bharadwaj. All rights
@@ -1098,7 +1103,7 @@ const App = () => {
                 y: -2,
                 scale: 1.04,
               }}
-              href="https://github.com/shreshtadev"
+              href="https://github.com/chinmaidb"
               className="hover:text-amber-400 transition-colors"
             >
               ShreshtaDEV

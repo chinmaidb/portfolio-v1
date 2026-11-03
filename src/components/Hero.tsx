@@ -43,11 +43,11 @@ export default function Hero({
         initial={{ opacity: 0, width: 0 }}
         animate={{ opacity: 1, width: "100%" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="flex items-center gap-3 overflow-hidden text-[0.66rem] uppercase tracking-[0.34em] text-amber-300"
+        className="riso-overline flex items-center gap-3 overflow-hidden text-[0.66rem] uppercase tracking-[0.24em]"
       >
         <span className="h-px w-7 shrink-0 bg-linear-to-r from-amber-400/0 via-amber-300/85 to-amber-400/0" />
         <span className="whitespace-nowrap">Professional profile</span>
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-black/15" />
       </motion.div>
 
       <div className="space-y-2">
@@ -55,7 +55,7 @@ export default function Hero({
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-5xl lg:text-[3.6rem]"
+          className="riso-headline max-w-4xl text-4xl font-semibold text-white md:text-5xl lg:text-[3.6rem]"
         >
           {displayedName}
           <span className="ml-1 inline-block animate-pulse text-amber-300/80">
@@ -93,7 +93,7 @@ export default function Hero({
             key={item}
             whileHover={{ y: -2, scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="theme-surface-soft inline-flex items-center rounded-full px-3 py-1 text-[0.7rem] font-medium tracking-wide text-(--theme-text-soft) shadow-[0_12px_28px_rgba(15,23,42,0.2)]"
+            className="riso-chip inline-flex items-center px-3 py-1 text-[0.7rem] font-medium tracking-wide text-(--theme-text-soft)"
           >
             {item}
           </motion.span>

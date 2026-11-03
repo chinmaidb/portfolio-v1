@@ -1,23 +1,39 @@
 @import "tailwindcss";
 
+@theme {
+  --color-white: #20272a;
+  --color-black: #20272a;
+  --color-slate-300: #3d4b50;
+  --color-slate-500: #687479;
+  --color-slate-950: #20272a;
+  --color-amber-300: #c84d38;
+  --color-amber-400: #d4553c;
+  --color-amber-500: #a83d32;
+  --color-orange-400: #d6a53d;
+  --color-sky-400: #276f82;
+  --color-sky-500: #276f82;
+}
+
 @layer base {
   :root {
-    color-scheme: dark;
-    --theme-bg-start: #07111f;
-    --theme-bg-accent: #123a67;
-    --theme-surface: rgba(11, 18, 32, 0.78);
-    --theme-surface-strong: rgba(7, 13, 24, 0.94);
-    --theme-surface-soft: rgba(18, 26, 44, 0.62);
-    --theme-border: rgba(148, 163, 184, 0.16);
-    --theme-border-strong: rgba(148, 163, 184, 0.24);
-    --theme-text: #f8fafc;
-    --theme-text-soft: #d6deea;
-    --theme-text-muted: #8b97a8;
-    --theme-accent: #f4b860;
-    --theme-accent-strong: #f59e0b;
-    --theme-accent-soft: rgba(244, 184, 96, 0.16);
-    --theme-accent-contrast: #111827;
-    --theme-selection: rgba(244, 184, 96, 0.28);
+    color-scheme: light;
+    --theme-bg-start: #f3ead7;
+    --theme-bg-accent: #d9e7df;
+    --theme-surface: rgba(255, 250, 237, 0.82);
+    --theme-surface-strong: rgba(255, 250, 237, 0.94);
+    --theme-surface-soft: rgba(251, 243, 224, 0.78);
+    --theme-border: rgba(32, 39, 42, 0.22);
+    --theme-border-strong: rgba(32, 39, 42, 0.42);
+    --theme-text: #20272a;
+    --theme-text-soft: #33444a;
+    --theme-text-muted: #687479;
+    --theme-accent: #c84d38;
+    --theme-accent-strong: #a83d32;
+    --theme-accent-soft: rgba(200, 77, 56, 0.13);
+    --theme-accent-contrast: #fff8e9;
+    --theme-selection: rgba(39, 111, 130, 0.24);
+    --theme-ink-blue: #276f82;
+    --theme-ink-gold: #d6a53d;
   }
 
   html,
@@ -27,7 +43,7 @@
   }
 
   body {
-    background: #040812;
+    background: #e8ddc6;
     color: var(--theme-text-soft);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -41,9 +57,129 @@
 
 @layer components {
   .theme-shell {
-    background:
-      radial-gradient(circle at 16% 18%, var(--theme-bg-accent), transparent 36%),
-      linear-gradient(180deg, var(--theme-bg-start), #040812 78%);
+    background-color: var(--theme-bg-start);
+    background-image:
+      radial-gradient(
+        circle at 15% 15%,
+        var(--theme-bg-accent),
+        transparent 34%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(54, 45, 34, 0.025) 0 1px,
+        transparent 1px 5px
+      ),
+      linear-gradient(135deg, #f8f0df 0%, #eee3cd 100%);
+    background-attachment: fixed;
+  }
+
+  .riso-print {
+    isolation: isolate;
+  }
+
+  .riso-print::before {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background-image: radial-gradient(
+      rgba(32, 39, 42, 0.24) 0.65px,
+      transparent 0.8px
+    );
+    background-size: 6px 6px;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+  }
+
+  .riso-ink-field {
+    position: absolute;
+    pointer-events: none;
+    background-size:
+      8px 8px,
+      auto;
+    clip-path: polygon(3% 12%, 94% 0, 100% 78%, 18% 100%, 0 62%);
+    opacity: 0.42;
+    mix-blend-mode: multiply;
+  }
+
+  .riso-ink-field-blue {
+    background-image:
+      radial-gradient(
+        circle,
+        rgba(39, 111, 130, 0.58) 0 1px,
+        transparent 1.3px
+      ),
+      linear-gradient(135deg, rgba(39, 111, 130, 0.2), transparent 72%);
+  }
+
+  .riso-ink-field-coral {
+    background-image:
+      radial-gradient(circle, rgba(200, 77, 56, 0.5) 0 1px, transparent 1.3px),
+      linear-gradient(135deg, rgba(214, 165, 61, 0.2), transparent 72%);
+  }
+
+  .riso-headline {
+    font-family:
+      "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    text-shadow:
+      2px 2px 0 rgba(200, 77, 56, 0.18),
+      -1px -1px 0 rgba(39, 111, 130, 0.15);
+  }
+
+  .riso-overline {
+    color: var(--theme-accent-strong);
+    font-family: "Courier New", monospace;
+  }
+
+  .riso-chip {
+    border: 1px solid rgba(32, 39, 42, 0.2);
+    border-radius: 0.2rem;
+    background-color: var(--theme-surface-soft);
+    box-shadow:
+      2px 2px 0 rgba(200, 77, 56, 0.2),
+      -1px -1px 0 rgba(39, 111, 130, 0.14);
+  }
+
+  .theme-shell .theme-surface,
+  .theme-shell .theme-surface-strong,
+  .theme-shell .theme-surface-soft {
+    backdrop-filter: none;
+    box-shadow:
+      3px 3px 0 rgba(200, 77, 56, 0.12),
+      -1px -1px 0 rgba(39, 111, 130, 0.12);
+  }
+
+  .riso-contact .theme-surface-strong {
+    border-radius: 0.55rem;
+  }
+
+  .riso-input {
+    border: 1px solid rgba(32, 39, 42, 0.3);
+    border-radius: 0.35rem;
+    background-color: rgba(255, 251, 239, 0.88);
+    box-shadow: inset 0 1px 2px rgba(32, 39, 42, 0.07);
+  }
+
+  .riso-input:focus {
+    border-color: var(--theme-ink-blue);
+    box-shadow:
+      2px 2px 0 rgba(200, 77, 56, 0.16),
+      0 0 0 2px rgba(39, 111, 130, 0.12);
+  }
+
+  .riso-submit {
+    border: 1px solid rgba(32, 39, 42, 0.7);
+    border-radius: 0.35rem;
+    background-color: var(--theme-accent);
+    color: #fff8e9;
+    box-shadow: 4px 4px 0 var(--theme-ink-blue);
+  }
+
+  .riso-submit:hover:not(:disabled) {
+    background-color: #b94534;
+    box-shadow: 2px 2px 0 var(--theme-ink-blue);
+    transform: translate(2px, 2px);
   }
 
   .theme-surface {
@@ -70,8 +206,19 @@
 
   .theme-accent-soft {
     background: var(--theme-accent-soft);
-    border-color: rgba(244, 184, 96, 0.28);
+    border-color: rgba(200, 77, 56, 0.28);
     color: var(--theme-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

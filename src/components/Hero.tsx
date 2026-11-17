@@ -19,6 +19,10 @@ export default function Hero({ name, title, summary, highlights = defaultHighlig
     animate: { opacity: 1, y: 0 },
     transition: { delay, duration: 0.72, ease: [0.22, 1, 0.36, 1] as const },
   });
+  const phoneNumber = "917204502694";
+  const message = "Hi Chinmai, I saw your work and wanted to reach out about a project.";
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
 
   return (
     <section className="hero-copy space-y-4">
@@ -48,8 +52,17 @@ export default function Hero({ name, title, summary, highlights = defaultHighlig
       </motion.div>
 
       <motion.div {...enter(0.3)} className="hero-actions">
-        <a href="#work" className="hero-primary-link">Explore my work <ArrowDownRight className="h-4 w-4" /></a>
-        <a href="mailto:chinmai.bharadwaj@ymail.com" className="hero-secondary-link">Start a conversation <ArrowUpRight className="h-4 w-4" /></a>
+        <a href="#work" className="hero-primary-link">
+          Explore my work <ArrowDownRight className="h-4 w-4" />
+        </a>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hero-secondary-link"
+        >
+          Start a conversation <ArrowUpRight className="h-4 w-4" />
+        </a>
       </motion.div>
       <motion.p {...enter(0.36)} className="hero-signoff">Thoughtful systems. Useful software. Good people.</motion.p>
     </section>

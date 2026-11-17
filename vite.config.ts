@@ -17,14 +17,8 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             {
-              name: "three-vendor",
-              test: /node_modules[\\/]three[\\/]/,
-              priority: 30,
-              maxSize: 450_000,
-            },
-            {
               name: "animation-vendor",
-              test: /node_modules[\\/](?:gsap|lenis|motion|motion-dom|motion-utils)[\\/]/,
+              test: /node_modules[\\/](?:motion|motion-dom|motion-utils)[\\/]/,
               priority: 20,
             },
             {

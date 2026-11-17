@@ -1,9 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, AnimatePresence, type Variants } from "motion/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import * as THREE from "three";
+import { useEffect, useState, type ReactNode } from "react";
+import { motion, AnimatePresence, useReducedMotion, type Variants } from "motion/react";
 import {
   Mail,
   Phone,
@@ -21,14 +17,10 @@ import {
   Rocket,
 } from "lucide-react";
 
-import heroImage from "./assets/hero.png";
-import brandLogo from "./assets/logo.svg";
 import badgeLogo from "./assets/logo-2.svg";
 import ContactForm from "./components/ContactForm";
 import Hero from "./components/Hero";
 import Modal from "./components/Modal";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const staggerContainer: Variants = {
   hidden: {},
@@ -70,14 +62,13 @@ type ProjectItem = {
 };
 
 const App = () => {
+  const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState("experience");
   const [selectedItem, setSelectedItem] = useState<
     | { kind: "experience"; index: number }
     | { kind: "project"; index: number }
     | null
   >(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rootRef = useRef<HTMLDivElement | null>(null);
 
   const skills = {
     backend: [
@@ -240,179 +231,9 @@ const App = () => {
   const activeProject =
     selectedItem?.kind === "project" ? projects[selectedItem.index] : null;
 
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const palette = [
-      { bg: "#f3ead7", accent: "#d9e7df" },
-      { bg: "#f2e5d7", accent: "#ead1c7" },
-      { bg: "#eef0df", accent: "#d9e4ed" },
-      { bg: "#f1e7d2", accent: "#e8dba9" },
-    ];
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      smoothWheel: true,
-      touchMultiplier: 1.1,
-    });
-    let rafId = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
-
-    lenis.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
-    const sections = gsap.utils.toArray<HTMLElement>(".chapter-section");
-    sections.forEach((section, index) => {
-      const scene = section.querySelector(".scene-card") ?? section;
-      gsap.fromTo(
-        scene,
-        { autoAlpha: 0, y: 70, scale: 0.97 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          duration: 1.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 78%",
-            end: "top 22%",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top center",
-        end: "bottom center",
-        onEnter: () => {
-          const tone = palette[index % palette.length];
-          gsap.to(root, {
-            "--theme-bg-start": tone.bg,
-            "--theme-bg-accent": tone.accent,
-            duration: 1.0,
-            ease: "power2.out",
-          });
-        },
-        onEnterBack: () => {
-          const tone = palette[index % palette.length];
-          gsap.to(root, {
-            "--theme-bg-start": tone.bg,
-            "--theme-bg-accent": tone.accent,
-            duration: 1.0,
-            ease: "power2.out",
-          });
-        },
-      });
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      gsap.ticker.remove(tick);
-      lenis.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        antialias: true,
-        alpha: true,
-      });
-    } catch {
-      return;
-    }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      100,
-    );
-    camera.position.z = 1.7;
-
-    const geometry = new THREE.PlaneGeometry(4.2, 4.2, 120, 120);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x8fa4c2,
-      roughness: 0.8,
-      metalness: 0.05,
-      transparent: true,
-      opacity: 0.4,
-    });
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 1.0);
-    const point = new THREE.PointLight(0xffffff, 1.5, 8);
-    point.position.set(0.8, 0.5, 1.4);
-    scene.add(ambient, point);
-
-    const pointer = new THREE.Vector2(0, 0);
-    const onPointerMove = (event: PointerEvent) => {
-      pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-      pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    const onResize = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    };
-
-    onResize();
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("resize", onResize);
-
-    const positions = geometry.attributes.position.array as Float32Array;
-    let threeRaf = 0;
-    const animate = () => {
-      const t = performance.now() * 0.00035;
-      for (let i = 0; i < positions.length; i += 3) {
-        const x = positions[i];
-        const y = positions[i + 1];
-        positions[i + 2] =
-          Math.sin(x * 2.6 + t) * 0.05 + Math.cos(y * 3.1 + t * 1.5) * 0.05;
-      }
-      geometry.attributes.position.needsUpdate = true;
-      geometry.computeVertexNormals();
-      plane.rotation.x += (pointer.y * 0.35 - plane.rotation.x) * 0.06;
-      plane.rotation.y += (pointer.x * 0.35 - plane.rotation.y) * 0.06;
-      point.position.x = pointer.x * 1.2;
-      point.position.y = pointer.y;
-      renderer.render(scene, camera);
-      threeRaf = requestAnimationFrame(animate);
-    };
-    threeRaf = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(threeRaf);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("resize", onResize);
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-    };
-  }, []);
 
   return (
     <motion.div
-      ref={rootRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -424,10 +245,6 @@ const App = () => {
       }
       className="theme-shell riso-print min-h-screen text-(--theme-text-soft) font-sans selection:bg-(--theme-selection) relative overflow-hidden"
     >
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 -z-10 opacity-70"
-      />
       {/* Ambient Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -458,7 +275,7 @@ const App = () => {
       </div>
 
       {/* Header / Hero Section */}
-      <header className="chapter-section relative z-10 overflow-hidden border-b border-white/15 bg-white/3 pt-14 pb-10 min-h-[88vh] flex items-center">
+      <header id="top" className="chapter-section relative z-10 overflow-hidden border-b border-white/10 pt-5 pb-12 min-h-[88vh] flex items-center">
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -466,49 +283,27 @@ const App = () => {
           className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-amber-400 via-orange-400 to-sky-400 origin-left"
         />
 
-        <div className="scene-card max-w-5xl mx-auto px-6 relative z-10">
-          <div className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr] xl:items-end">
+        <div className="scene-card max-w-6xl mx-auto px-6 relative z-10 w-full">
+          <nav aria-label="Main navigation" className="portfolio-nav mb-12 flex items-center justify-between rounded-full px-4 py-2 sm:px-5">
+            <a href="#top" className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white"><span className="nav-mark">C</span><span className="hidden sm:inline">Chinmai D Bharadwaj</span></a>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <a href="#work" className="nav-link">Experience</a>
+              <a href="#expertise" className="nav-link">Expertise</a>
+              <a href="#contact" className="nav-contact">Let’s talk <ChevronRight className="h-3.5 w-3.5" /></a>
+            </div>
+          </nav>
+          <div className="hero-composition grid gap-10 xl:grid-cols-[1.12fr_0.88fr] xl:items-center">
             {/* Left Content */}
             <motion.div
               variants={staggerContainer}
               initial="hidden"
               animate="show"
-              className="space-y-5"
+              className="hero-copy-column space-y-5"
             >
               <motion.div
                 variants={fadeUp}
-                className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                className="hero-availability-row flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex items-center gap-4">
-                  <motion.div
-                    whileHover={{
-                      scale: 1.08,
-                      rotate: 3,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 18,
-                    }}
-                    className="flex items-center justify-center w-14 h-14 rounded-[1.1rem] theme-surface-strong shadow-[0_18px_45px_rgba(15,23,42,0.45)]"
-                  >
-                    <img
-                      src={brandLogo}
-                      alt="Brand mark"
-                      className="w-9 h-9 drop-shadow-[0_0_18px_rgba(244,184,96,0.18)]"
-                    />
-                  </motion.div>
-
-                  <div className="hidden sm:block">
-                    <p className="text-[0.65rem] uppercase tracking-[0.32em] text-(--theme-text-muted)">
-                      Chinmai D Bharadwaj
-                    </p>
-                    <p className="mt-1 text-sm text-(--theme-text-soft)">
-                      Senior Full-Stack Engineer
-                    </p>
-                  </div>
-                </div>
-
                 <motion.div
                   whileHover={{
                     scale: 1.04,
@@ -519,25 +314,24 @@ const App = () => {
                     stiffness: 260,
                     damping: 20,
                   }}
-                  className="inline-flex items-center gap-2 rounded-full theme-surface-soft px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.24em] text-amber-300 shadow-[0_14px_30px_rgba(15,23,42,0.35)]"
+                  className="hero-availability inline-flex items-center gap-2 rounded-full theme-surface-soft px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.24em] text-amber-300 shadow-[0_14px_30px_rgba(15,23,42,0.35)]"
                 >
+                  <span className="availability-light" />
                   <Rocket className="w-4 h-4" />
                   Available for new opportunities
                 </motion.div>
+                <span className="hero-location-note">Shimoga, India <span>·</span> Working globally</span>
               </motion.div>
 
               <motion.div variants={fadeUp}>
                 <Hero
                   name="Chinmai D Bharadwaj"
                   title="Senior Full-Stack Engineer & Entrepreneur"
-                  summary="Cloud-native systems, microservices, AI workflows"
+                  summary="I design and build dependable digital products, from early architecture to production systems. My work spans cloud platforms, distributed services, and practical AI integrations."
                 />
               </motion.div>
 
-              <motion.div
-                variants={fadeUp}
-                className="mt-3 flex flex-wrap gap-2 text-xs text-(--theme-text-muted) md:text-sm"
-              >
+              <motion.div variants={fadeUp} className="hero-contact-strip mt-3 flex flex-wrap gap-2 text-xs text-(--theme-text-muted) md:text-sm">
                 <motion.a
                   whileHover={{
                     y: -2,
@@ -562,10 +356,7 @@ const App = () => {
                 </span>
               </motion.div>
 
-              <motion.div
-                variants={fadeUp}
-                className="mt-2.5 flex flex-wrap gap-2.5"
-              >
+              <motion.div variants={fadeUp} className="hero-social-strip mt-2.5 flex flex-wrap gap-2.5">
                 <motion.a
                   whileHover={{
                     scale: 1.05,
@@ -621,23 +412,68 @@ const App = () => {
                 delay: 0.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="relative"
+              className="hero-art-column relative"
             >
-              <div className="overflow-hidden rounded-4xl theme-surface-strong shadow-[0_30px_80px_rgba(15,23,42,0.55)]">
-                <motion.img
-                  src={heroImage}
-                  alt="Illustration of modern engineering workflow"
-                  className="w-full h-full object-cover"
-                  animate={{
-                    y: [0, -12, 0],
-                    scale: [1, 1.015, 1],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
+              <div className="hero-showcase relative min-h-[420px] overflow-hidden rounded-4xl theme-surface-strong sm:min-h-[510px]" role="img" aria-label="Illustrated software portfolio dashboard with delivery metrics, service architecture, and code panels">
+                <div className="showcase-grid absolute inset-0" />
+                <div className="showcase-kicker absolute left-6 top-6"><span>Product systems</span><b>FIELD NOTE / 01</b></div>
+
+                <motion.div
+                  className="product-console"
+                  animate={reduceMotion ? {} : { y: [0, -7, 0], rotate: [0, -0.35, 0] }}
+                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <div className="console-topbar">
+                    <div className="console-window-dots"><i /><i /><i /></div>
+                    <span>WORKSPACE / SYSTEMS</span>
+                    <div className="console-live"><i /> LIVE</div>
+                  </div>
+                  <div className="console-layout">
+                    <aside className="console-sidebar">
+                      <span className="console-mark">C</span>
+                      <i className="active" /><i /><i /><i />
+                      <span className="console-sidebar-foot">DB</span>
+                    </aside>
+                    <div className="console-content">
+                      <div className="console-heading">
+                        <div><small>OVERVIEW / 2026</small><strong>Systems that scale.</strong></div>
+                        <span className="console-avatar">CD</span>
+                      </div>
+                      <div className="console-metrics">
+                        <div className="console-metric console-metric-coral"><small>POLICIES MIGRATED</small><strong>800<span>k+</span></strong><i>↗ 98.4% verified</i></div>
+                        <div className="console-metric console-metric-lilac"><small>YEARS BUILDING</small><strong>12<span>+</span></strong><i>Across product & platform</i></div>
+                      </div>
+                      <div className="console-lower">
+                        <div className="console-chart">
+                          <div className="console-chart-title"><span>Delivery momentum</span><b>+24.8%</b></div>
+                          <div className="console-bars">{[32, 48, 42, 69, 56, 82, 72, 94, 80, 100, 87, 112].map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</div>
+                          <div className="console-chart-axis"><span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span></div>
+                        </div>
+                        <div className="console-stack">
+                          <small>BUILT WITH</small>
+                          <span><i className="stack-dot stack-java" />Java</span>
+                          <span><i className="stack-dot stack-go" />Go</span>
+                          <span><i className="stack-dot stack-python" />Python</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div className="architecture-float architecture-float-top" animate={reduceMotion ? {} : { y: [0, 6, 0], rotate: [2, 1, 2] }} transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}>
+                  <div className="architecture-float-icon">&lt;/&gt;</div>
+                  <div><small>API LAYER</small><strong>Spring Boot</strong><i>12 services · healthy</i></div>
+                  <span className="architecture-status" />
+                </motion.div>
+
+                <motion.div className="architecture-float architecture-float-bottom" animate={reduceMotion ? {} : { y: [0, -5, 0], rotate: [-2, -1, -2] }} transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}>
+                  <div className="architecture-node"><span /><span /><span /></div>
+                  <div><small>CONNECTED SYSTEMS</small><strong>Cloud · Data · AI</strong></div>
+                  <ChevronRight size={15} />
+                </motion.div>
+
+                <div className="showcase-tech-tags"><span>DESIGN</span><i /> <span>ENGINEER</span><i /> <span>SHIP</span></div>
+                <div className="hero-sticker"><strong>12+</strong><span>years building<br/>for the real world</span></div>
               </div>
 
               <motion.div
@@ -673,8 +509,7 @@ const App = () => {
                 </p>
 
                 <p className="mt-2 text-sm text-(--theme-text-soft) leading-relaxed">
-                  Microservices, AI integrations, and enterprise-grade cloud
-                  architecture built for scale.
+                  Thoughtful architecture, cloud platforms, and practical AI — made to work beautifully together.
                 </p>
               </motion.div>
             </motion.div>
@@ -682,8 +517,14 @@ const App = () => {
         </div>
       </header>
 
+      <div className="marquee-band relative z-10 overflow-hidden" aria-label="Architecture, engineering, and product craft">
+        <div className="marquee-track" aria-hidden="true">
+          {[0, 1].map((copy) => <div className="marquee-content" key={copy}><span>Architecture</span><i>✳</i><span>Engineering</span><i>✳</i><span>Product thinking</span><i>✳</i><span>Cloud native</span><i>✳</i><span>AI with purpose</span><i>✳</i><span>Architecture</span><i>✳</i><span>Engineering</span><i>✳</i><span>Product thinking</span><i>✳</i><span>Cloud native</span><i>✳</i><span>AI with purpose</span><i>✳</i></div>)}
+        </div>
+      </div>
+
       {/* Main Content */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 chapter-section">
+      <main id="work" className="portfolio-main relative z-10 max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-3 gap-12 chapter-section">
         {/* Left Column */}
         <motion.div
           variants={staggerContainer}
@@ -693,10 +534,10 @@ const App = () => {
           className="lg:col-span-1 space-y-12"
         >
           {/* Skills */}
-          <motion.section variants={fadeUp}>
+          <motion.section id="expertise" variants={fadeUp}>
             <h3 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
               <Code2 className="w-6 h-6 text-amber-500" />
-              Technical Arsenal
+              What I work with
             </h3>
 
             <div className="space-y-6">
@@ -777,7 +618,7 @@ const App = () => {
         {/* Right Column */}
         <div className="lg:col-span-2 space-y-12">
           {/* Tabs */}
-          <div className="flex gap-4 border-b border-white/10 pb-px">
+          <div className="portfolio-tabs flex gap-4 border-b border-white/10 pb-px">
             <motion.button
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.97 }}
@@ -813,7 +654,7 @@ const App = () => {
             >
               <span className="flex items-center gap-2">
                 <Globe className="w-5 h-5" />
-                Key Highlights
+                Selected projects
               </span>
 
               {activeTab === "projects" && (

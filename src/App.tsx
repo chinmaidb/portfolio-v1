@@ -7,6 +7,7 @@ import {
   MapPin,
   Briefcase,
   GraduationCap,
+  BookOpen,
   ChevronRight,
   Terminal,
   Database,
@@ -49,6 +50,7 @@ const fadeUp: Variants = {
 };
 
 type ExperienceItem = {
+  icon: ReactNode;
   role: string;
   company: string;
   period: string;
@@ -248,6 +250,7 @@ const App = () => {
 
   const experience: ExperienceItem[] = [
     {
+      icon: <Rocket aria-hidden="true" size={18} />,
       role: "Entrepreneur / Co-founder",
       company: "ShreshtaSMG",
       period: "June 2025 - Present",
@@ -288,6 +291,7 @@ const App = () => {
       ],
     },
     {
+      icon: <Briefcase aria-hidden="true" size={18} />,
       role: "Senior Developer / Lead",
       company: "HCL Technologies",
       period: "Sep 2020 - June 2025",
@@ -310,6 +314,7 @@ const App = () => {
       ],
     },
     {
+      icon: <Terminal aria-hidden="true" size={18} />,
       role: "Software Engineer",
       company: "ViewMyRecords / SVTPL",
       period: "Mar 2018 - Sep 2020",
@@ -323,6 +328,7 @@ const App = () => {
       tech: ["Angular", "Spring Boot", "RxJS", "PostgreSQL", "Alfresco"],
     },
     {
+      icon: <Cpu aria-hidden="true" size={18} />,
       role: "Member Technical Staff",
       company: "MAHAT CONSULTING",
       period: "Dec 2014 - Dec 2017",
@@ -830,7 +836,7 @@ const App = () => {
                 <div className="story-heading-row"><div><p className="story-eyebrow">02 / THE JOURNEY</p><h2>Built through <em>experience.</em></h2></div><span className="story-side-note">12 years · 4 chapters</span></div>
                 <div className="experience-story-grid">
                   {experience.map((job, index) => <motion.button key={job.company} type="button" initial={reduceMotion ? false : { opacity: 0, y: 34, rotate: -1.2 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.8, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }} whileHover={reduceMotion ? undefined : { y: -5 }} onClick={() => setSelectedItem({ kind: "experience", index })} className="experience-story-card theme-surface-strong text-left rounded-3xl p-5 md:p-6">
-                    <div className="flex items-center justify-between gap-3"><span className="story-card-index">0{index + 1}</span><span className="story-card-period">{job.period}</span></div><h3>{job.role}</h3><p className="story-card-company">{job.company}</p><p className="story-card-summary">{job.description}</p><div className="story-card-tags">{job.tech.slice(0, 4).map(tag => <span key={tag}>{tag}</span>)}</div><span className="story-card-action">READ CHAPTER ↗</span>
+                    <div className="flex items-center justify-between gap-3"><span className="story-card-index">{job.icon}</span><span className="story-card-period">{job.period}</span></div><h3>{job.role}</h3><p className="story-card-company">{job.company}</p><p className="story-card-summary">{job.description}</p><div className="story-card-tags">{job.tech.slice(0, 4).map(tag => <span key={tag}>{tag}</span>)}</div><span className="story-card-action"><BookOpen size={14} aria-hidden="true" /> READ CHAPTER</span>
                   </motion.button>)}
                 </div>
               </div>

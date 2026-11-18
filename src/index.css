@@ -65,6 +65,10 @@
     outline: 2px solid #df6549;
     outline-offset: 4px;
   }
+  a,
+  button {
+    cursor: pointer;
+  }
 }
 
 @layer components {
@@ -1928,7 +1932,9 @@
     font-size: 0.59rem;
   }
   .story-card-action {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     margin-top: 1rem;
     color: #b44b38;
     font-size: 0.58rem;
